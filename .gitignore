@@ -3,3 +3,7 @@
 ################################################################################
 
 /src/MoviePickerCore/obj/Debug/netcoreapp1.0
+/.vs
+/src/MoviePickerCore/bin/Debug/netcoreapp1.0
+/src/MoviePickerCore/wwwroot/lib
+/src/MoviePickerCore/settings.json
