@@ -11,14 +11,14 @@ namespace MoviePicker.Utility
 {
     public static class JackettHelper
     {
-        public static IEnumerable<JackettResultGroup> Query(string id)
+        public static IEnumerable<JackettResultGroup> Query()
         {
             using (var client = new HttpClient())
             {
                 var content = new FormUrlEncodedContent(new[]
                 {
-                    new KeyValuePair<string, string>("Category", "2040"),
-                    new KeyValuePair<string, string>("Query", id)
+                    new KeyValuePair<string, string>("Category", "2040")
+                    //new KeyValuePair<string, string>("Query", id)
                 });
 
                 var result = client.PostAsync("http://jackett.local/Admin/search", content).Result;
@@ -32,8 +32,8 @@ namespace MoviePicker.Utility
             }
         }
 
-        private const string HighQuality = "brrip|bluray";
-        private const string MidQuality = "web|webrip|dvdrip|web-dl|hdrip";
+        private const string HighQuality = "brrip|bluray|bdrip|hddvd";
+        private const string MidQuality = "web|webrip|dvdrip|web-dl|hdrip|dvdrip";
         private const string LowQuality = "hd-ts|hdcam";
 
         private static IEnumerable<JackettResult> DeserializeJackettResult(string json)
@@ -41,12 +41,19 @@ namespace MoviePicker.Utility
             var ret = new List<JackettResult>();
             dynamic temp = JsonConvert.DeserializeObject(json);
             var results = temp.Results;
-            foreach (dynamic result in results)
+            foreach (var result in results)
             {
                 string title = result.Title;
                 Match parse = Regex.Match(title, "(.*?)((19|20)[0-9]{2})");
-                Match quality = Regex.Match(title, $"({HighQuality}|{MidQuality}|{LowQuality})", RegexOptions.IgnoreCase);
-                var qualityText = quality.Success ? quality.Groups[1].ToString() : null;
+                //Match quality = Regex.Match(title, $"({HighQuality}|{MidQuality}|{LowQuality})", RegexOptions.IgnoreCase);
+                //var qualityText = quality.Success ? quality.Groups[1].ToString() : null;
+                var quality = 0;
+                if (Regex.IsMatch(title, $"{HighQuality}", RegexOptions.IgnoreCase))
+                    quality = 3;
+                else if (Regex.IsMatch(title, $"{MidQuality}", RegexOptions.IgnoreCase))
+                    quality = 2;
+                else if (Regex.IsMatch(title, $"{LowQuality}", RegexOptions.IgnoreCase))
+                    quality = 1;
                 if (parse.Success)
                 {
                     ret.Add(new JackettResult
@@ -55,7 +62,7 @@ namespace MoviePicker.Utility
                         Seeders = result.Seeders,
                         Name = FixTitle(parse.Groups[1].ToString()),
                         Year = int.Parse(parse.Groups[2].ToString()),
-                        Quality = qualityText,
+                        Quality = quality,
                         Link = result.Link
                     });
                 }

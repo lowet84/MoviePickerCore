@@ -2,8 +2,9 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/src/MoviePickerCore/obj/Debug/netcoreapp1.0
+/src/MoviePickerCore/obj/
 /.vs
-/src/MoviePickerCore/bin/Debug/netcoreapp1.0
+/src/MoviePickerCore/bin/
 /src/MoviePickerCore/wwwroot/lib
 /src/MoviePickerCore/settings.json
+/src/MoviePickerCore/Properties/PublishProfiles

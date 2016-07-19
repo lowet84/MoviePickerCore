@@ -14,16 +14,16 @@ namespace MoviePickerCore.Controllers
         [HttpGet]
         public IList<JackettResultGroup> Get()
         {
-            var ret = JackettHelper.Query(string.Empty);
+            var ret = JackettHelper.Query();
             return ret.Take(10).ToList();
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public IEnumerable<JackettResultGroup> Get(string id)
+        public IEnumerable<JackettResultGroup> Get(int id)
         {
-            var ret = JackettHelper.Query(id);
-            return ret;
+            var ret = JackettHelper.Query();
+            return ret.Take(id).ToList();
         }
 
         // POST api/values

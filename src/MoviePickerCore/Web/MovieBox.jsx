@@ -10,7 +10,7 @@
     },
     componentDidMount: function () {
         $.ajax({
-            url: this.props.url,
+            url: this.props.url+"/20",
             dataType: 'json',
             cache: false,
             success: function (data) {
@@ -57,7 +57,7 @@
             else {
                 return (
                     <p key={index} onClick={()=>this.expand(index)}>
-                        {item.name} ({item.year}) {item.seeders}
+                        {item.name} ({item.year}) {item.seeders} {item.quality}
                     </p>
                 );
             }

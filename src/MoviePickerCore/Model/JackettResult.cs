@@ -11,7 +11,7 @@ namespace MoviePickerCore.Model
         public int Year { get; set; }
 
         public string Name { get; set; }
-        public string Quality { get; set; }
+        public int Quality { get; set; }
         public string Link { get; set; }
 
         public override string ToString()
@@ -26,13 +26,16 @@ namespace MoviePickerCore.Model
         public int Year { get; }
         public int Seeders { get; set; }
         public IEnumerable<JackettResult> Results { get; }
+        public int Quality { get; set; }
 
         public JackettResultGroup(string name, int year, IEnumerable<JackettResult> results)
         {
             Name = name;
             Year = year;
-            Results = results;
-            Seeders = results.Sum(d => d.Seeders);
+            Results = results.ToList();
+            Seeders = Results.Sum(d => d.Seeders);
+            var quality = Results.Max(d => d.Quality);
+            Quality = quality * ((quality > 0) && Results.Any(d => d.Quality == 0) ? -1 : 1);
         }
 
         public override string ToString()
