@@ -1,6 +1,6 @@
-﻿var MovieBox = require('./MovieBox.jsx');
+﻿var MovieList = require('./MovieList.jsx');
 
 ReactDOM.render(
-    <MovieBox url="/api/values"/>,
+    <MovieList url="/api/values/"/>,
     document.getElementById('content')
 );

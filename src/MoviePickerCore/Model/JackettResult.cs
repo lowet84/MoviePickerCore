@@ -27,6 +27,7 @@ namespace MoviePickerCore.Model
         public int Seeders { get; set; }
         public IEnumerable<JackettResult> Results { get; }
         public int Quality { get; set; }
+        public MovieInfo MovieInfo { get; set; }
 
         public JackettResultGroup(string name, int year, IEnumerable<JackettResult> results)
         {

@@ -1,72 +1,31 @@
-﻿export default React.createClass({
-    getInitialState: function () {
-        return {data: []};
-    },
-    expand: function (index) {
-        var data = this.state.data;
-        data[index].expanded = data[index].expanded != true;
-
-        this.setState({data: data});
-    },
-    componentDidMount: function () {
-        $.ajax({
-            url: this.props.url+"/20",
-            dataType: 'json',
-            cache: false,
-            success: function (data) {
-                this.setState({data: data});
-            }.bind(this),
-            error: function (xhr, status, err) {
-                console.error(this.props.url, status, err.toString());
-            }.bind(this)
-        });
-    },
-    download: function (link) {
-        $.ajax({
-            url: this.props.url,
-            type: 'POST',
-            data: {link: link},
-            success: function (data) {
-                var x = 0;
-                var y = 0;
-            }.bind(this),
-            error: function (xhr, status, err) {
-                console.error(this.props.url, status, err.toString());
-            }.bind(this)
-        });
-    },
+export default React.createClass({
     render: function () {
-        var movies = this.state.data.map(function (item, index) {
-            if (item.expanded == true) {
-                var children = item.results.map(function (item, index) {
-                    return (
-                        <div key={this.index + "_" + index}>
-                            <a onClick={()=>this.download(item.link)} href="/#">[{item.releaseTitle}]</a>
-                        </div>
-                    );
-                }, this);
-                return (
-                    <div key={index}>
-                        <p onClick={()=>this.expand(index)}>
-                            {item.name} ({item.year}) {item.seeders}
-                        </p>
-                        {children}
-                    </div>
-                );
-            }
-            else {
-                return (
-                    <p key={index} onClick={()=>this.expand(index)}>
-                        {item.name} ({item.year}) {item.seeders} {item.quality}
-                    </p>
-                );
-            }
-        }, this);
+        var imageUrl = null;
+        if (this.props.data.movieInfo == null) {
+            var placeHolderUrl1 = "https://placeholdit.imgix.net/~text?txtsize=47&txt=";
+            var placeHolderUrl2 = "&w=500&h=750&txttrack=0";
+            var imageUrlName = this.props.data.name.replace(" ", "+");
+            imageUrl = placeHolderUrl1 + imageUrlName + placeHolderUrl2;
+        }
+        else {
+            imageUrl = this.props.data.movieInfo.imageUrl;
+        }
+        var style = {
+            backgroundImage: "url(" + imageUrl + ")"
+        };
+        var corner = "";
+        if(this.props.data.quality==1 || this.props.data.quality==-1){
+            corner = "cornerRed";
+        }
+        else if(this.props.data.quality==2 || this.props.data.quality==-2){
+            corner = "cornerYellow";
+        }
+        else if(this.props.data.quality==3 || this.props.data.quality==-4){
+            corner = "cornerGreen";
+        }
         return (
-            <div>
-                <h1>Top Movies!</h1>
-                <div>{movies}</div>
-            </div>
+            <div className={"movie-image hand " + corner} style={style}
+                 onClick={()=>this.props.expand(this.props.index)}/>
         );
     }
 });
