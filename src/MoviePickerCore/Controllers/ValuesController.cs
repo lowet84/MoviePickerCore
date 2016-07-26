@@ -21,7 +21,7 @@ namespace MoviePickerCore.Controllers
         [HttpGet("{id}")]
         public IList<JackettResultGroup> Get(int id)
         {
-            var releases = JackettHelper.Query().ToList();
+            var releases = JackettHelper.GetResults().ToList();
             var ret = releases.Skip(id*12).Take(12).ToList();
             foreach (var jackettResultGroup in ret)
             {

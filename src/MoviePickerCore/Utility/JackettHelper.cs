@@ -11,7 +11,18 @@ namespace MoviePicker.Utility
 {
     public static class JackettHelper
     {
-        public static IEnumerable<JackettResultGroup> Query()
+        private static List<JackettResultGroup> _cache;
+        private static DateTime _cacheTime;
+
+        public static IEnumerable<JackettResultGroup> GetResults()
+        {
+            if (_cache != null && _cacheTime.AddMinutes(5) >= DateTime.Now) return _cache;
+            _cache = Query().ToList();
+            _cacheTime = DateTime.Now;
+            return _cache;
+        }
+
+        private static IEnumerable<JackettResultGroup> Query()
         {
             using (var client = new HttpClient())
             {
@@ -33,7 +44,7 @@ namespace MoviePicker.Utility
 
         private const string HighQuality = "brrip|bluray|bdrip|hddvd";
         private const string MidQuality = "web|webrip|dvdrip|web-dl|hdrip|dvdrip";
-        private const string LowQuality = "hd-ts|hdcam|hdts";
+        private const string LowQuality = "hd-ts|hdcam|hdts|hdtc|hd-tc";
 
         private static IEnumerable<JackettResult> DeserializeJackettResult(string json)
         {
@@ -43,7 +54,7 @@ namespace MoviePicker.Utility
             foreach (var result in results)
             {
                 string title = result.Title;
-                Match parse = Regex.Match(title, "(.*?)((19|20)[0-9]{2})");
+                Match parse = Regex.Match(title, "^(.*)((19|20)[0-9]{2})");
                 var quality = 0;
                 if (Regex.IsMatch(title, $"{HighQuality}", RegexOptions.IgnoreCase))
                     quality = 3;

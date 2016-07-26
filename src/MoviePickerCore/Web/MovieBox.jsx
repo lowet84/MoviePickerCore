@@ -1,10 +1,10 @@
-export default React.createClass({
-    render: function () {
+export default class MovieBox extends React.Component{
+    render() {
         var imageUrl = null;
         if (this.props.data.movieInfo == null) {
             var placeHolderUrl1 = "https://placeholdit.imgix.net/~text?txtsize=47&txt=";
             var placeHolderUrl2 = "&w=500&h=750&txttrack=0";
-            var imageUrlName = this.props.data.name.replace(" ", "+");
+            var imageUrlName = this.props.data.name==undefined ? "Loading..." : this.props.data.name.replace(" ", "+");
             imageUrl = placeHolderUrl1 + imageUrlName + placeHolderUrl2;
         }
         else {
@@ -25,7 +25,7 @@ export default React.createClass({
         }
         return (
             <div className={"movie-image hand " + corner} style={style}
-                 onClick={()=>this.props.expand(this.props.index)}/>
+                 onClick={()=>this.props.parent.expand(this.props.index)}/>
         );
-    }
-});
+    };
+};
